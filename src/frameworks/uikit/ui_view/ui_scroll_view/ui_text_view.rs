@@ -5,6 +5,7 @@
  */
 //! `UITextView`.
 
+use crate::dyld::{ConstantExports, HostConstant};
 use crate::frameworks::core_graphics::cg_context::CGContextSetRGBFillColor;
 use crate::frameworks::core_graphics::cg_geometry::CGPointZero;
 use crate::frameworks::core_graphics::{CGFloat, CGPoint, CGRect, CGSize};
@@ -27,6 +28,14 @@ use crate::objc::{
 use crate::Environment;
 
 type UIDataDetectorTypes = NSUInteger;
+
+const UITextViewTextDidChangeNotification: &str = "UITextViewTextDidChangeNotification";
+
+/// `NSNotificationName` values.
+pub const CONSTANTS: ConstantExports = &[(
+    "_UITextViewTextDidChangeNotification",
+    HostConstant::NSString(UITextViewTextDidChangeNotification),
+)];
 
 pub struct UITextViewHostObject {
     superclass: super::UIScrollViewHostObject,

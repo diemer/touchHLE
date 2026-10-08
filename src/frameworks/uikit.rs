@@ -74,6 +74,7 @@ pub const DYLIB: crate::dyld::HostDylib = crate::dyld::HostDylib {
         ui_application::CONSTANTS,
         ui_device::CONSTANTS,
         ui_view::ui_control::ui_text_field::CONSTANTS,
+        ui_view::ui_scroll_view::ui_text_view::CONSTANTS,
         ui_view::ui_window::CONSTANTS,
     ],
     function_exports: &[
