@@ -1,0 +1,4 @@
+[env]
+# SDL2 declares a pre-3.5 cmake_minimum_required, which CMake 4.x refuses to
+# configure. Without this the sdl2-sys build script fails.
+CMAKE_POLICY_VERSION_MINIMUM = "3.5"
