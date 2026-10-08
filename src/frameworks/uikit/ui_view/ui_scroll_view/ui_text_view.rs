@@ -16,7 +16,10 @@ use crate::frameworks::uikit::ui_font::{
     UITextAlignmentLeft,
 };
 use crate::frameworks::uikit::ui_graphics::UIGraphicsGetCurrentContext;
-use crate::frameworks::uikit::ui_view::ui_control::ui_text_field::UIReturnKeyType;
+use crate::frameworks::uikit::ui_view::ui_control::ui_text_field::{
+    UIKeyboardAppearance, UIKeyboardType, UIReturnKeyType, UITextAutocapitalizationType,
+    UITextAutocorrectionType,
+};
 use crate::objc::{
     id, impl_HostObject_with_superclass, msg, msg_class, msg_super, nil, objc_classes, release,
     retain, todo_objc_setter, ClassExports, NSZonePtr,
@@ -240,8 +243,33 @@ pub const CLASSES: ClassExports = objc_classes! {
     update_scroll(env, this);
 }
 
+// UITextInputTraits, which UITextView conforms to just like UITextField does.
 - (())setReturnKeyType:(UIReturnKeyType)type_ {
     todo_objc_setter!(this, type_);
+}
+
+- (())setKeyboardType:(UIKeyboardType)type_ {
+    todo_objc_setter!(this, type_);
+}
+
+- (())setKeyboardAppearance:(UIKeyboardAppearance)appearance {
+    todo_objc_setter!(this, appearance);
+}
+
+- (())setAutocapitalizationType:(UITextAutocapitalizationType)type_ {
+    todo_objc_setter!(this, type_);
+}
+
+- (())setAutocorrectionType:(UITextAutocorrectionType)type_ {
+    todo_objc_setter!(this, type_);
+}
+
+- (())setEnablesReturnKeyAutomatically:(bool)enables {
+    todo_objc_setter!(this, enables);
+}
+
+- (())setSecureTextEntry:(bool)secure {
+    todo_objc_setter!(this, secure);
 }
 
 - (())setDataDetectorTypes:(UIDataDetectorTypes)types {
