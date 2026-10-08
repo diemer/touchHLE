@@ -202,6 +202,12 @@ pub const CLASSES: ClassExports = objc_classes! {
     interface_orientation == UIInterfaceOrientationPortrait
 }
 
+// touchHLE only tracks one app-wide orientation, so report that.
+- (UIInterfaceOrientation)interfaceOrientation {
+    let app: id = msg_class![env; UIApplication sharedApplication];
+    msg![env; app statusBarOrientation]
+}
+
 // UIResponder implementation
 // From the Apple UIView docs regarding [UIResponder nextResponder]:
 // "UIViewController similarly implements the method
