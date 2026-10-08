@@ -433,7 +433,18 @@ pub(super) fn UIApplicationMain(
 }
 
 /// Tell the app it's about to quit and then exit.
+/// How long the app gets to handle termination before we quit regardless.
+const TERMINATION_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(3);
+
 pub(super) fn exit(env: &mut Environment) {
+    // The handlers below run guest code outside the run loop, so an app
+    // waiting on anything it delivers never finishes.
+    std::thread::spawn(|| {
+        std::thread::sleep(TERMINATION_TIMEOUT);
+        echo!("App stopped responding while handling termination, exiting anyway.");
+        std::process::exit(0);
+    });
+
     let ui_application: id = msg_class![env; UIApplication sharedApplication];
 
     let center: id = msg_class![env; NSNotificationCenter defaultCenter];
