@@ -20,6 +20,17 @@ struct NSDateFormatterHostObject {
 }
 impl HostObject for NSDateFormatterHostObject {}
 
+fn day_of_year(year: i32, month: i8, day: i8) -> u32 {
+    const DAYS_BEFORE_MONTH: [u32; 12] = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    let leap = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+    let month = month.clamp(1, 12);
+    let mut result = DAYS_BEFORE_MONTH[month as usize - 1] + day.max(1) as u32;
+    if leap && month > 2 {
+        result += 1;
+    }
+    result
+}
+
 pub const CLASSES: ClassExports = objc_classes! {
 
 (env, this, _cmd);
@@ -58,6 +69,9 @@ pub const CLASSES: ClassExports = objc_classes! {
     let minute = greg_date.minutes;
     let second = greg_date.seconds;
 
+    let day_of_year = day_of_year(year, month, day);
+    let frac_second = second.fract();
+
     format = format.replace("yyyy", format!("{year:04}").as_str());
     format = format.replace("YYYY", format!("{year:04}").as_str());
     format = format.replace("MM", format!("{month:02}").as_str());
@@ -65,11 +79,15 @@ pub const CLASSES: ClassExports = objc_classes! {
     format = format.replace("HH", format!("{hour:02}").as_str());
     format = format.replace("mm", format!("{minute:02}").as_str());
     format = format.replace("ss", format!("{second:02}").as_str());
+    format = format.replace("DDD", format!("{day_of_year:03}").as_str());
+    format = format.replace("DD", format!("{day_of_year:02}").as_str());
+    format = format.replace("D", format!("{day_of_year}").as_str());
+    format = format.replace("SS", format!("{:02}", (frac_second * 100.0) as u32).as_str());
+    format = format.replace("S", format!("{}", (frac_second * 10.0) as u32).as_str());
 
-    for c in format.chars() {
-        if let pattern @ ('A'..='Z' | 'a'..='z') = c {
-            unimplemented!("date string contains unsubstituted format pattern: {pattern}");
-        }
+    // Real NSDateFormatter leaves patterns it doesn't know alone.
+    if let Some(pattern) = format.chars().find(|c| c.is_ascii_alphabetic()) {
+        log!("Warning: unsubstituted date format pattern {pattern:?} in {format:?}");
     }
     log_dbg!("date_format after: {:?}", format);
 
